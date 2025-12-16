@@ -34,11 +34,12 @@ pipe = CogVideoXPipeline.from_pretrained(
     model_id,
     transformer=transformer,
     torch_dtype=torch.bfloat16,
-).to("cuda")
+)
 
 if args.compile:
     pipe.transformer = torch.compile(pipe.transformer, mode="max-autotune-no-cudagraphs")
 
+pipe.enable_model_cpu_offload()
 pipe.vae.enable_tiling()
 pipe.vae.enable_slicing()
 
